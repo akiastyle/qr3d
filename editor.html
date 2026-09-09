@@ -1,0 +1,147 @@
+<!doctype html>
+<!-- editor.html v1.0.0 -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f3f4f4" />
+    <title>qr3d · Editor</title>
+    <base href="/qr3d/" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./editor.css?v=1.0.0" />
+    <script src="./core/vendor/qrcode.js"></script>
+    <script type="module" src="./editor.js?v=1.0.0"></script>
+  </head>
+  <body>
+    <main class="editor-shell">
+      <div class="editor-logo" data-editor-logo aria-label="qr3d"></div>
+      <header class="composition-heading">
+        <h1>
+          <button type="button" data-title-display title="Double-click or press Enter to edit">Untitled</button>
+          <input data-animation-title data-title-heading aria-label="Animation title" value="Untitled" maxlength="20" readonly />
+        </h1>
+      </header>
+      <section class="layers-panel glass" aria-label="Mesh">
+        <header class="layers-heading">
+          <h2>Mesh</h2>
+          <button class="asset-add" type="button" data-asset-picker aria-label="Add model"><span aria-hidden="true">+</span></button>
+        </header>
+        <div class="layers-tools">
+          <span class="mesh-total">Total <output data-mesh-count aria-label="Available meshes" aria-live="polite">0</output></span>
+          <button type="button" data-panel-drag aria-label="Move Mesh panel" title="Drag · Arrow keys">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+          </button>
+          <button type="button" data-panel-toggle aria-label="Collapse mesh list" aria-expanded="true" aria-controls="mesh-list">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>
+          </button>
+        </div>
+        <input class="sr-only" type="file" data-asset-input accept=".glb,model/gltf-binary" multiple />
+        <div class="asset-list" id="mesh-list" data-asset-list aria-live="polite"></div>
+      </section>
+
+      <section class="season-stage" data-i18n-aria="seasons" aria-label="Season planes">
+        <div class="season-carousel" data-season-carousel>
+          <article class="season-view" data-season="spring">
+            <canvas data-i18n-aria="canvasSpring" aria-label="Spring isometric plane"></canvas>
+          </article>
+          <article class="season-view" data-season="summer">
+            <canvas data-i18n-aria="canvasSummer" aria-label="Summer isometric plane"></canvas>
+          </article>
+          <article class="season-view" data-season="autumn">
+            <canvas data-i18n-aria="canvasAutumn" aria-label="Autumn isometric plane"></canvas>
+          </article>
+          <article class="season-view" data-season="winter">
+            <canvas data-i18n-aria="canvasWinter" aria-label="Winter isometric plane"></canvas>
+          </article>
+        </div>
+        <nav class="season-pager" data-i18n-aria="seasons" aria-label="Seasons">
+          <button type="button" data-season-index="0" data-i18n-aria="spring" aria-label="Spring" aria-pressed="true">✿</button>
+          <button type="button" data-season-index="1" data-i18n-aria="summer" aria-label="Summer" aria-pressed="false">☼</button>
+          <button type="button" data-season-index="2" data-i18n-aria="autumn" aria-label="Autumn" aria-pressed="false">♧</button>
+          <button type="button" data-season-index="3" data-i18n-aria="winter" aria-label="Winter" aria-pressed="false">❄</button>
+        </nav>
+        <nav class="transform-tools" data-transform-tools aria-label="Actions">
+          <button type="button" data-transform-help-button aria-label="Actions" aria-controls="actions-panel" aria-expanded="false">i</button>
+          <button type="button" data-theme-toggle aria-label="Enable dark theme" aria-pressed="false">◐</button>
+        </nav>
+        <nav class="view-tools" aria-label="View controls">
+          <button class="view-cube" type="button" data-view-cube aria-label="Drag to rotate view">
+            <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 18a12 12 0 1 1 18 10"/><path d="m23 28-5-1 2-4"/><path d="m16 8 7 4v8l-7 4-7-4v-8l7-4Z"/><path d="m9 12 7 4 7-4M16 16v8"/></svg>
+          </button>
+          <button type="button" data-view-reset aria-label="Reset view">↺</button>
+          <button type="button" data-copy-selected aria-label="Copy selected meshes" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="1"/><path d="M16 8V5H5v11h3"/></svg>
+          </button>
+          <button type="button" data-undo aria-label="Undo" title="Undo · Ctrl/⌘ Z" disabled>↶</button>
+          <button type="button" data-redo aria-label="Redo" title="Redo · Ctrl/⌘ Shift Z" disabled>↷</button>
+          <button type="button" data-export-scene aria-label="Export scene" title="Export scene">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></svg>
+          </button>
+        </nav>
+        <div class="panel-overlay" data-panel-overlay hidden></div>
+        <aside class="export-panel glass" data-export-panel hidden aria-labelledby="export-title">
+          <header><h2 id="export-title">Export</h2></header>
+          <textarea data-export-source readonly spellcheck="false" aria-label="Scene JSON"></textarea>
+          <footer>
+            <button type="button" data-export-copy aria-label="Copy JSON" title="Copy JSON">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="1"/><path d="M16 8V5H5v11h3"/></svg>
+            </button>
+            <button type="button" data-export-download aria-label="Download JSON" title="Download JSON">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></svg>
+            </button>
+            <button type="button" data-export-player aria-label="Open in player" title="Open in player">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7 8 5-8 5Z"/></svg>
+            </button>
+          </footer>
+        </aside>
+        <aside class="color-panel" data-color-panel hidden aria-label="Material colors"></aside>
+        <nav class="copy-seasons" data-copy-seasons hidden aria-label="Copy to seasons">
+          <button type="button" data-copy-season="spring" aria-label="Spring" aria-pressed="false">✿</button>
+          <button type="button" data-copy-season="summer" aria-label="Summer" aria-pressed="false">☼</button>
+          <button type="button" data-copy-season="autumn" aria-label="Autumn" aria-pressed="false">♧</button>
+          <button type="button" data-copy-season="winter" aria-label="Winter" aria-pressed="false">❄</button>
+          <button type="button" data-copy-apply aria-label="Confirm copy">✓</button>
+        </nav>
+        <aside class="transform-help glass" id="actions-panel" data-transform-help hidden aria-labelledby="actions-title">
+          <header class="actions-heading"><h2 id="actions-title">Actions</h2></header>
+          <label class="actions-title-field">Title<input data-animation-title aria-label="Animation title" value="Untitled" maxlength="20" /></label>
+          <label class="actions-title-field">QR URL<input data-qr-url type="url" maxlength="50" aria-label="QR URL" required /></label>
+          <div class="transform-instructions">
+            <div class="transform-instruction" aria-label="Drag the preview onto the plane to add the model">
+              <span class="mouse-input"><svg viewBox="0 0 24 30" aria-hidden="true"><rect x="3" y="1" width="18" height="28" rx="9"/><path class="is-active" d="M12 1v11H3a9 9 0 0 1 9-11Z"/><path d="M12 1v11M3 12h18"/></svg></span>
+              <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17a8 8 0 0 1 13-6M17 11l-4-3M17 11l-1 5"/></svg>
+              <span class="keyboard-input is-empty" aria-hidden="true"></span>
+            </div>
+            <div class="transform-instruction" aria-label="Move the selected model across the plane">
+              <span class="mouse-input"><svg viewBox="0 0 24 30" aria-hidden="true"><rect x="3" y="1" width="18" height="28" rx="9"/><path class="is-active" d="M12 1v11H3a9 9 0 0 1 9-11Z"/><path d="M12 1v11M3 12h18"/></svg></span>
+              <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M4 4l6 6M20 9V4h-5M20 4l-6 6M4 15v5h5M4 20l6-6M20 15v5h-5M20 20l-6-6"/></svg>
+              <span class="keyboard-input"><span class="direction-keys" aria-hidden="true"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd></span></span>
+            </div>
+            <div class="transform-instruction" aria-label="Scale the selected model">
+              <span class="mouse-input"><svg viewBox="0 0 24 30" aria-hidden="true"><rect x="3" y="1" width="18" height="28" rx="9"/><rect class="is-active" x="10" y="4" width="4" height="8" rx="2"/><path d="M12 1v11M3 12h18"/></svg><span class="mouse-alternative" title="Hold the scale control and drag up to enlarge or down to reduce" aria-label="Hold the scale control and drag up to enlarge or down to reduce"><svg viewBox="0 0 24 30" aria-hidden="true"><rect x="3" y="1" width="18" height="28" rx="9"/><path class="is-active" d="M12 1v11H3a9 9 0 0 1 9-11Z"/><path d="M12 1v11M3 12h18"/></svg><span aria-hidden="true">↕</span></span></span>
+              <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M10 7v6M7 10h6M14.5 14.5 20 20"/></svg>
+              <span class="keyboard-input"><span class="instruction-keys" aria-hidden="true"><kbd>+</kbd><kbd>−</kbd></span></span>
+            </div>
+            <div class="transform-instruction" aria-label="Rotate the selected model">
+              <span class="mouse-input"><svg viewBox="0 0 24 30" aria-hidden="true"><rect x="3" y="1" width="18" height="28" rx="9"/><rect class="is-active" x="10" y="4" width="4" height="8" rx="2"/><path d="M12 1v11M3 12h18"/></svg><kbd class="instruction-key">Shift</kbd><span class="mouse-alternative" title="Hold the rotation control and drag left or right in 15° steps" aria-label="Hold the rotation control and drag left or right in 15° steps"><svg viewBox="0 0 24 30" aria-hidden="true"><rect x="3" y="1" width="18" height="28" rx="9"/><path class="is-active" d="M12 1v11H3a9 9 0 0 1 9-11Z"/><path d="M12 1v11M3 12h18"/></svg><span aria-hidden="true">↔</span></span></span>
+              <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 8V4l-3 3a7 7 0 1 0 2 8M19 8h-4"/></svg>
+              <span class="keyboard-input is-empty" aria-hidden="true"></span>
+            </div>
+            <div class="transform-instruction" aria-label="Raise or lower the selected model">
+              <span class="mouse-input"><svg viewBox="0 0 24 30" aria-hidden="true"><rect x="3" y="1" width="18" height="28" rx="9"/><rect class="is-active" x="10" y="4" width="4" height="8" rx="2"/><path d="M12 1v11M3 12h18"/></svg><kbd class="instruction-key">Ctrl</kbd><span class="mouse-alternative" title="Hold the height control and drag up or down" aria-label="Hold the height control and drag up or down"><svg viewBox="0 0 24 30" aria-hidden="true"><rect x="3" y="1" width="18" height="28" rx="9"/><path class="is-active" d="M12 1v11H3a9 9 0 0 1 9-11Z"/><path d="M12 1v11M3 12h18"/></svg><span aria-hidden="true">↕</span></span></span>
+              <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/></svg>
+              <span class="keyboard-input"><span class="instruction-keys" aria-hidden="true"><kbd>Shift</kbd><b>+</b><kbd>↑↓</kbd></span></span>
+            </div>
+            <div class="transform-instruction" aria-label="Remove the selected model from the current season">
+              <span class="mouse-input" title="Click the trash button on the model controls"><svg viewBox="0 0 24 30" aria-hidden="true"><rect x="3" y="1" width="18" height="28" rx="9"/><path class="is-active" d="M12 1v11H3a9 9 0 0 1 9-11Z"/><path d="M12 1v11M3 12h18"/></svg></span>
+              <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M8 7l1-3h6l1 3M7 7l1 13h8l1-13"/></svg>
+              <span class="keyboard-input"><span class="instruction-keys" aria-hidden="true"><kbd>Del</kbd></span></span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <p class="editor-error" data-editor-error hidden>WebGPU is not available in this browser.</p>
+    </main>
+  </body>
+</html>

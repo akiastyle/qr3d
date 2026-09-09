@@ -1,0 +1,47 @@
+@import url("./core/ui.css");
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; margin: 0; }
+body { min-height: 100dvh; background: transparent; color: var(--ui-ink); }
+button, input { font: inherit; }
+.scene-shell { position: relative; width: 100%; height: 100dvh; min-height: 100vh; overflow: hidden; background: transparent; }
+.canvas-wrapper { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+canvas { display: block; width: 100%; height: 100%; background: transparent; }
+.webgpu-error { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 24px; color: var(--ui-muted); font-size: 1.25rem; text-align: center; }
+.webgpu-error[hidden] { display: none; }
+.controls-overlay { position: absolute; z-index: 2; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: max(8px, env(safe-area-inset-bottom, 0px)); pointer-events: none; }
+.control-panel { display: flex; flex-direction: column; gap: 8px; width: min(640px, calc(100% - 16px)); padding: 10px; border: 1px solid var(--ui-glass-border); border-radius: 16px 16px 0 0; background: var(--ui-glass-bg); box-shadow: var(--ui-panel-shadow); pointer-events: auto; -webkit-backdrop-filter: blur(18px) saturate(120%); backdrop-filter: blur(18px) saturate(120%); }
+.input-row { display: flex; align-items: center; gap: 8px; }
+input { flex: 1; min-width: 0; height: 48px; padding: 0 14px; border: 1px solid var(--ui-border); border-radius: 8px; outline: none; background: var(--ui-surface); color: var(--ui-ink); font-size: 16px; }
+input:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
+button { min-height: 44px; padding: 0; border: 0; cursor: pointer; }
+.share-button { width: 48px; min-height: 48px; border-radius: 8px; background: var(--ui-accent); color: var(--ui-on-accent); font-size: 20px; font-weight: 600; }
+.scene-controls, .season-controls { position: absolute; z-index: 1; top: 50%; transform: translateY(-50%); pointer-events: auto; }
+.scene-controls { left: 10px; }
+.season-controls { right: 10px; }
+.scene-row, .season-row { display: flex; flex-direction: column; gap: 2px; padding: 5px; border-radius: 13px; background: var(--ui-panel); box-shadow: var(--ui-panel-shadow); }
+.scene-row button, .season-row button, .scene-toggle, .season-toggle { display: grid; width: 40px; min-height: 44px; place-items: center; border-radius: 8px; background: transparent; color: var(--ui-muted); font-size: 20px; font-weight: 500; }
+.share-button, .scene-row button, .season-row button, .scene-toggle, .season-toggle { transition: background var(--motion-fast) var(--motion-standard), color var(--motion-fast) var(--motion-standard), transform var(--motion-fast) var(--motion-standard), box-shadow var(--motion-fast) var(--motion-standard); }
+.share-button:hover { background: var(--ui-accent-hover); transform: translateY(-2px); box-shadow: var(--ui-control-shadow); }
+.scene-row button:hover, .season-row button:hover, .scene-toggle:hover, .season-toggle:hover { background: var(--ui-mesh-hover); transform: translateY(-2px); box-shadow: var(--ui-control-shadow); }
+.share-button:active, .scene-row button:active, .season-row button:active, .scene-toggle:active, .season-toggle:active { transform: scale(.94); }
+.scene-row button[aria-pressed="true"], .season-row button[aria-pressed="true"] { background: var(--ui-selected-bg); color: var(--ui-selected-ink); box-shadow: var(--ui-control-shadow); }
+.share-button:focus-visible, .scene-row button:focus-visible, .season-row button:focus-visible, .scene-toggle:focus-visible, .season-toggle:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
+.scene-row svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.scene-toggle, .season-toggle { display: none; }
+.plugin-player .control-panel, .plugin-player .scene-controls { display: none; }
+
+@media (max-width: 768px) {
+  .control-panel { width: 100%; padding: 8px 12px; gap: 6px; }
+  .scene-toggle, .season-toggle { display: grid; background: var(--ui-panel); box-shadow: var(--ui-panel-shadow); }
+  .scene-row, .season-row { position: absolute; bottom: calc(100% + 8px); visibility: hidden; opacity: 0; pointer-events: none; transition: opacity var(--motion-ui) var(--motion-out), transform var(--motion-ui) var(--motion-out), visibility 0s linear var(--motion-ui); }
+  .scene-row { left: 0; transform: translateX(-10px); }
+  .season-row { right: 0; transform: translateX(10px); }
+  .scene-controls.is-open .scene-row, .season-controls.is-open .season-row { visibility: visible; opacity: 1; transform: translateX(0); pointer-events: auto; transition-delay: 0s; }
+  .scene-controls.is-open .scene-toggle { transform: rotate(180deg); }
+  .season-controls.is-open .season-toggle { transform: rotate(180deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share-button, .scene-toggle, .season-toggle, .scene-row, .season-row, .scene-row button, .season-row button { transition: none; }
+}

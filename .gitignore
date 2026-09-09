@@ -1,0 +1,10 @@
+/_old/
+/assets/meshes/raw/
+gpg.txt
+.env
+.env.*
+*.pem
+*.key
+.htaccess
+__pycache__/
+*.pyc
